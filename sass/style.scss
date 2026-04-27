@@ -930,8 +930,8 @@ html.theme--light {
   p { color: #888; font-size: 0.95rem; }
 }
 html.theme--dark .weekly-header {
-  background-color: #161b22;
-  border: 1px solid #21262d;
+  background-color: transparent !important;   /* 与暗色背景融合 */
+  border: none !important;
   h1 { color: #a371f7; }   /* 周记标题保持紫色 */
   p { color: #8b949e; }
 }
