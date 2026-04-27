@@ -192,13 +192,13 @@
         <li>
           <a {% if language_site_path is starting_with("/Blog") and not language_site_path is starting_with("/Weekly") %}class="current" {% endif %} 
              href="{{ get_url(path="@/Blog/_index.md", lang=lang) }}">
-            <i class="fa-solid fa-pen-fancy"></i> 博客
+            <i class="fa-solid fa-pen-fancy"></i> Blog
           </a>
         </li>
         <li>
           <a {% if language_site_path is starting_with("/Weekly") %}class="current" {% endif %} 
              href="{{ get_url(path="@/Weekly/_index.md", lang=lang) }}">
-            <i class="fa-solid fa-book-open"></i> 周记
+            <i class="fa-solid fa-book-open"></i> Weekly
           </a>
         </li>
         {% if config.extra.show.tags %}

@@ -4,7 +4,7 @@ date = 2026-04-27
 description = "第一周周记：从零搭建个人博客"
 
 [taxonomies]
-tags = ["周记", "站务"]
+tags = ["周记"]
 +++
 
 > 本周关键词：**Zola、GitHub Pages、博客搭建、新开始**

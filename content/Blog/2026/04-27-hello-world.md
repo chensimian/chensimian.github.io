@@ -4,7 +4,7 @@ date = 2026-04-27
 description = "这是 Smian 博客的第一篇文章"
 
 [taxonomies]
-tags = ["随笔", "站务"]
+tags = ["随笔"]
 +++
 
 > 万事开头难，但开了头就好办了。
