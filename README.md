@@ -2,7 +2,7 @@
 
 > Stay hungry, stay foolish.
 
-🌐 Website: [smianlovecoding.site](https://smianlovecoding.site)
+🌐 Website: [chensimian.github.io](https://chensimian.github.io)
 
 基于 [Zola](https://www.getzola.org/) 静态站点生成器搭建，主题参考 [minglovecoding.github.io](https://github.com/minglovecoding/minglovecoding.github.io)。
 

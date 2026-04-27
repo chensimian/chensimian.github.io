@@ -11,7 +11,7 @@ taxonomies:
 
 ## 关于这个博客
 
-这是 [smianlovecoding.site](https://smianlovecoding.site) 的第一篇文章。
+这是 [chensimian.github.io](https://chensimian.github.io) 的第一篇文章。
 
 挑选 [Zola](https://www.getzola.org/) 作为静态站点生成器，理由很简单：
 

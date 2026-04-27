@@ -42,7 +42,7 @@ paginate_by: 0
 
 - 🛠 基于 [Zola](https://www.getzola.org/) 静态站点生成器搭建
 - 🚀 部署在 GitHub Pages，源码托管于 [GitHub](https://github.com/chensimian)
-- 🌐 域名：[smianlovecoding.site](https://smianlovecoding.site)
+- 🌐 域名：[chensimian.github.io](https://chensimian.github.io)
 
 ## 我感兴趣的方向
 
