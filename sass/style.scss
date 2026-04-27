@@ -579,7 +579,8 @@ html.theme--dark {
 
   /* 主内容区暗色背景 */
   .content {
-    background-color: transparent !important;
+    background-color: #0d1117 !important;  /* 深色背景覆盖整个内容区 */
+    min-height: 100vh;  /* 确保至少铺满一屏 */
   }
 
   html::before {
@@ -921,13 +922,6 @@ html.theme--light {
     color: #7c3aed;
     font-size: 0.85rem;
   }
-}
-
-html.theme--dark .weekly-card {
-  background-color: #1c1228;
-  border-color: #4c1d95;
-  &:hover { background-color: #251538; }
-  .post-title h3 a::before { color: #a371f7; }
 }
 
 .weekly-header {
