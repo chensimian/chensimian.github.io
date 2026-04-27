@@ -195,12 +195,12 @@ img { max-width: 100%; height: auto; }
       width: 120px; height: 120px;   /* 缩小头像，适配侧边栏宽度 */
       transition: transform 0.2s;
 
-      &:hover { transform: scale(1.15); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
+      &:hover { transform: scale(1.08); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
       img { border-radius: 50%; width: 100%; height: auto; }
     }
 
     .title {
-      margin-top: 36px;   /* 头像与标题之间的间距 */
+      margin-top: 44px;   /* 头像与标题之间的间距（考虑 hover 放大） */
       padding: 0 12px;   /* 左右内边距防止文字贴边 */
       
       h1 { 
