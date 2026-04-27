@@ -596,9 +596,9 @@ html.theme--dark {
 
   /* ===== 侧边栏 ===== */
   #sidebar {
-    background-color: rgba(13, 17, 23, 0.97) !important;
-    background-image: none !important;  /* 彻底去掉侧边栏的背景图 */
-    border-right: 1px solid #21262d;
+    background-color: #0d1117 !important;    /* 与主内容区完全一致 */
+    background-image: none !important;        /* 彻底去掉侧边栏的背景图 */
+    border-right: none !important;             /* 去掉右边框线 */
 
     .logo-title .title h1 { color: #e6edf3 !important; }
     .logo-title .description p,
@@ -835,7 +835,7 @@ html.theme--light {
 
   #sidebar {
     background-color: #fff;
-    border-right: 1px solid #f2f2f2;
+    border-right: none;
     .logo-title .description { color: #565654; }
     .logo-title .title a { color: #464646; }
     .social-links a { color: #565654; &:hover { color: #4786D6; } }
