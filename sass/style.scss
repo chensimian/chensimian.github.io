@@ -168,6 +168,8 @@ img { max-width: 100%; height: auto; }
 /* ========== 侧边栏（保持原始 Mingo 风格） ========== */
 #sidebar {
   width: 20%;
+  min-width: 220px;   /* 最小宽度，防止太窄时内容挤压 */
+  max-width: 300px;
   background-size: cover;
   height: 100%;
   transition: transform 0.3s ease-in-out;
@@ -177,7 +179,7 @@ img { max-width: 100%; height: auto; }
 
   .logo-title {
     text-align: center;
-    padding-top: 20px;
+    padding-top: 30px;   /* 顶部留白多一点 */
 
     .description { font-size: 14px; }
 
@@ -190,16 +192,24 @@ img { max-width: 100%; height: auto; }
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 200px; height: 200px;
+      width: 140px; height: 140px;   /* 缩小头像，适配侧边栏宽度 */
       transition: transform 0.2s;
 
-      &:hover { transform: scale(1.2); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
+      &:hover { transform: scale(1.15); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
       img { border-radius: 50%; width: 100%; height: auto; }
     }
 
     .title {
-      margin-top: 24px;  /* 头像与标题之间的间距 */
-      h1 { font-family: inherit; font-weight: bold; letter-spacing: 1px; margin: 0; }
+      margin-top: 20px;   /* 头像与标题之间的间距 */
+      padding: 0 12px;   /* 左右内边距防止文字贴边 */
+      
+      h1 { 
+        font-family: inherit; 
+        font-weight: bold; 
+        letter-spacing: 1px; 
+        margin: 0 0 8px 0; 
+        font-size: 24px;
+      }
       h1 a { text-decoration: none; color: inherit; }
     }
   }
@@ -555,41 +565,12 @@ html.theme--dark {
 
   /* ===== 背景与全局 ===== */
   html {
-    background-color: #0d1117;  /* html 根元素铺满深色 */
+    background-color: #0d1117;  /* html 根元素铺满深色背景 */
   }
 
   body {
     color: #c9d1d9 !important;
-    background-color: #0d1117 !important;
-    width: 100% !important;  /* 暗色模式下铺满宽度 */
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* 整个页面背景覆盖 */
-  #main {
-    width: 100% !important;
-    max-width: none !important;
-    background-color: transparent;
-    padding: 0;
-    // 确保 content 区域也是暗色
-    .autopagerize_page_element {
-      background-color: transparent;
-      .content {
-        background-color: transparent;
-        width: 75% !important; /* 保持内容区在侧边栏右侧 */
-        float: right;
-        margin-right: 3%;
-      }
-    }
-  }
-
-  /* content 区域保持原有布局比例 */
-  .content {
-    width: 75% !important;
-    float: right;
-    margin-right: 2%;
+    background-color: transparent !important;  /* 透明，透出 html 的深色 */
   }
 
   html::before {
