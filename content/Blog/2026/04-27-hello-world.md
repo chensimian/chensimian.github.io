@@ -1,17 +1,17 @@
----
-title: Hello, World — 博客开张了
-date: 2026-04-27 10:00:00
-taxonomies:
-  tags:
-    - 随笔
-    - 站务
----
++++
+title = "Hello, World — 博客开张了"
+date = 2026-04-27
+description = "这是 Smian 博客的第一篇文章"
+
+[taxonomies]
+tags = ["随笔", "站务"]
++++
 
 > 万事开头难，但开了头就好办了。
 
 ## 关于这个博客
 
-这是 [chensimian.github.io](https://chensimian.github.io) 的第一篇文章。
+这是 **Smian 博客**的第一篇文章。
 
 挑选 [Zola](https://www.getzola.org/) 作为静态站点生成器，理由很简单：
 
