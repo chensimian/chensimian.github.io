@@ -1,4 +1,4 @@
-# Smian's Blog - Zola config
+# Smian's Blog - Zola Config
 title = "Smian"
 base_url = "https://chensimian.github.io/"
 
@@ -9,7 +9,7 @@ default_language = "en"
 
 [markdown]
 [markdown.highlighting]
-theme = "github-light"
+theme = "github-dark"
 style = "inline"
 
 [extra]
@@ -40,6 +40,7 @@ home = "Home"
 tags = "Tags"
 archive = "Archive"
 links = "Links"
+weekly = "周记"
 date_format = "%Y-%m-%d"
-next_page = "Next Page"
-last_page = "Last Page"
+next_page = "Next Page →"
+last_page = "← Last Page"

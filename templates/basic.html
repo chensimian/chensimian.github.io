@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" {% if config.extra.mode %} class="theme--{{config.extra.mode}}" {% else %} class="theme--light" {% endif %}>
+<html lang="en" {% if config.extra.mode %} class="theme--{{config.extra.mode}}" {% else %} class="theme--dark" {% endif %}>
 
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,13 +7,25 @@
   <link rel="apple-touch-icon" href="{{ get_url(path='images/logo.png') }}" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Main Stylesheet -->
   <link rel="stylesheet" href="{{ get_url(path='style.css') }}">
+  
   <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+  <meta name="description" content="{{ config.description }}">
+  
   {% if config.generate_feed %}
   <link rel="alternate" type="application/rss+xml" title="{{ config.title }}" href="{{ get_url(path='rss.xml', trailing_slash=false, lang=lang) }}">
   {% endif %}
+  
   {% block extra_head %}{% endblock extra_head %}
 
   {% if config.build_search_index %}
@@ -21,6 +33,8 @@
   <script type="text/javascript" src="{{ get_url(path='search_index.en.js') | safe }}" defer></script>
   {% endif %}
   <script type="text/javascript" src="{{ get_url(path='js/search.js') | safe }}" defer></script>
+  
+  <!-- MathJax -->
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <script>
     window.MathJax = {
@@ -34,11 +48,10 @@
           const codelist = document.getElementsByTagName("code");
           const inline = MathJax.config.tex.inlineMath;
           const display = MathJax.config.tex.displayMath;
-          const inlineRegexList = inline.map(delim => `(${delim[0].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")})((.|[\\r\\n\\t])*?)(${delim[1].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")})`);
-          const displayRegexList = display.map(delim => `(${delim[0].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")})((.|[\\r\\n\\t])*?)(${delim[1].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")})`);
+          const inlineRegexList = inline.map(delim => `(${delim[0].replace(/[-\\[\]\/{}()*+?.$^|]/g, "\\$&")})((.|[\\r\\n\\t])*?)(${delim[1].replace(/[-\\[\]\/{}()*+?.$^|]/g, "\\$&")})`);
+          const displayRegexList = display.map(delim => `(${delim[0].replace(/[-\\[\]\/{}()*+?.$^|]/g, "\\$&")})((.|[\\r\\n\\t])*?)(${delim[1].replace(/[-\\[\]\/{}()*+?.$^|]/g, "\\$&")})`);
           const inlineRegExp = new RegExp(inlineRegexList.join("|"));
           const displayRegExp = new RegExp(displayRegexList.join("|"));
-
           for (let i = prelist.length; i > 0; i--) {
             if (displayRegExp.test(prelist[i - 1].textContent)) {
               const t = document.createTextNode(prelist[i - 1].textContent);
@@ -46,7 +59,6 @@
               prelist[i - 1].parentNode.removeChild(prelist[i - 1]);
             }
           }
-
           for (let i = codelist.length; i > 0; i--) {
             if (inlineRegExp.test(codelist[i - 1].textContent)) {
               const t = document.createTextNode(codelist[i - 1].textContent);
@@ -54,40 +66,49 @@
               codelist[i - 1].parentNode.removeChild(codelist[i - 1]);
             }
           }
-
           MathJax.startup.defaultReady();
         }
       }
     };
   </script>
+
+  <!-- Mobile Menu Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const menuButton = document.getElementById('menu-button');
       const sidebar = document.getElementById('sidebar');
       const mainContent = document.getElementById('main');
-  
-      menuButton.addEventListener('click', () => {
-        sidebar.classList.toggle('active'); // 切换侧边栏显示状态
-        mainContent.classList.toggle('active'); // 添加或移除遮罩效果
-      });
-  
-      // 点击主内容区域时，隐藏侧边栏
-      mainContent.addEventListener('click', () => {
-        if (sidebar.classList.contains('active')) {
-          sidebar.classList.remove('active');
-          mainContent.classList.remove('active');
-        }
-      });
+    
+      if (menuButton) {
+        menuButton.addEventListener('click', () => {
+          sidebar.classList.toggle('active');
+          mainContent.classList.toggle('active');
+        });
+      }
+    
+      if (mainContent) {
+        mainContent.addEventListener('click', () => {
+          if (sidebar && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+            mainContent.classList.remove('active');
+          }
+        });
+      }
     });
   </script>
 </head>
 
 <body>
+  <!-- ===== Sidebar ===== -->
   <div id="sidebar" class="animated fadeInDown">
+    
+    <!-- Logo & Title -->
     <div class="logo-title">
       <div class="title">
         <div class="logo">
-          <img src="{{ get_url(path='images/logo.png') }}" alt="Logo">
+          <a href="{{ get_url(path='@/_index.md') }}">
+            <img src="{{ get_url(path='images/logo.png') }}" alt="Smian's Avatar">
+          </a>
         </div>
         <h1><a href="{{ get_url(path='@/_index.md') }}">{{ config.title }}</a></h1>
         <div class="description">
@@ -95,54 +116,120 @@
         </div>
       </div>
     </div>
+    
+    <!-- Social Links -->
     <ul class="social-links">
-      <li><a href="https://github.com/chensimian" aria-label="Go to Github profile page" title="Github"><i class="fab fa-github"></i></a></li>
-      <li><a href="mailto:chensimian@tencent.com" aria-label="Email" title="Email"><i class="fa-solid fa-envelope"></i></a></li>
-      <li><a href="{{ get_url(path='rss.xml', trailing_slash=false) }}" aria-label="RSS" title="RSS"><i class="fa-solid fa-rss"></i></a></li>
+      <li>
+        <a href="https://github.com/chensimian" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a href="mailto:chensimian@tencent.com" aria-label="Email" title="Email">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a href="{{ get_url(path='rss.xml', trailing_slash=false) }}" aria-label="RSS Feed" title="RSS">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
       {% if config.build_search_index %}
       <li>
-        <span id="search-ico" class="ms-Icon--Search">
+        <span id="search-ico" title="Search">
           <i class="fa-solid fa-magnifying-glass"></i>
         </span>
       </li>
-      <li><a href="https://visitorbadge.io/status?path=https%3A%2F%2Fchensimian.github.io%2F"><img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fchensimian.github.io%2F&label=clicks&labelColor=%232ccce4&countColor=%23ba68c8&style=flat&labelStyle=upper" /></a></li>
+      <li>
+        <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fchensimian.github.io%2F" target="_blank" rel="noopener noreferrer" title="Visitors">
+          <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fchensimian.github.io%2F&label=👋&labelColor=%231e293b&countColor=%23818cf8&style=flat&labelStyle=upper" alt="visitors" />
+        </a>
+      </li>
       {% endif %}
       {% block more_social_link %}{% endblock more_social_link %}
     </ul>
+    
+    <!-- Navigation -->
     <div class="page-top animated fadeInDown">
       <div class="nav">
         {% set current_url_str = current_url | as_str %}
         {% set language_site_base = get_url(path="@/_index.md", lang=lang) | as_str %}
         {% set language_site_path_without_prefix = current_url | trim_start_matches(pat=language_site_base) | trim_end_matches(pat="/") %}
         {% set language_site_path = '/' ~ language_site_path_without_prefix %}
-        <li><a {% if language_site_path=="/" or language_site_path is starting_with("/page/") %}class="current" {% endif %} href="{{ get_url(path="@/_index.md", lang=lang) }}">{{ trans(key="home", lang=lang) }}</a></li>
+
+        <li>
+          <a {% if language_site_path=="/" or language_site_path is starting_with("/page/") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-house-chimney" style="margin-right:6px;font-size:0.85rem;"></i>{{ trans(key="home", lang=lang) }}
+          </a>
+        </li>
+        
+        <li>
+          <a {% if language_site_path is starting_with("/Blog") or language_site_path is starting_with("/weekly") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/Blog/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-pen-nib" style="margin-right:6px;font-size:0.85rem;"></i>博客
+          </a>
+        </li>
+        
+        <li>
+          <a {% if language_site_path is starting_with("/Weekly") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/Weekly/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-book-open" style="margin-right:6px;font-size:0.85rem;"></i>周记
+          </a>
+        </li>
+
         {% if config.extra.show.tags %}
-        <li><a {% if language_site_path is starting_with("/tags") %}class="current" {% endif %} href="{{ get_url(path="@/_index.md", lang=lang) }}tags">{{ trans(key="tags", lang=lang) }}</a></li>
+        <li>
+          <a {% if language_site_path is starting_with("/tags") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/_index.md", lang=lang) }}tags">
+            <i class="fa-solid fa-tags" style="margin-right:6px;font-size:0.85rem;"></i>{{ trans(key="tags", lang=lang) }}
+          </a>
+        </li>
         {% endif %}
-        <li><a {% if language_site_path is starting_with("/archive") %}class="current" {% endif %} href="{{ get_url(path="@/archive/_index.md", lang=lang) }}">{{ trans(key="archive", lang=lang) }}</a></li>
-        <li><a {% if language_site_path is starting_with("/about") %}class="current" {% endif %} href="{{ get_url(path="@/about/_index.md", lang=lang) }}">{{ trans(key="about", lang=lang) }}</a></li>
+
+        <li>
+          <a {% if language_site_path is starting_with("/archive") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/archive/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-clock-rotate-left" style="margin-right:6px;font-size:0.85rem;"></i>{{ trans(key="archive", lang=lang) }}
+          </a>
+        </li>
+        
+        <li>
+          <a {% if language_site_path is starting_with("/about") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/about/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-user" style="margin-right:6px;font-size:0.85rem;"></i>{{ trans(key="about", lang=lang) }}
+          </a>
+        </li>
+        
         {% if config.extra.show.links %}
-        <li><a {% if language_site_path is starting_with("/link") %}class="current" {% endif %} href="{{ get_url(path="@/link/_index.md", lang=lang) }}">{{ trans(key="links", lang=lang) }}</a></li>
+        <li>
+          <a {% if language_site_path is starting_with("/link") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/link/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-link" style="margin-right:6px;font-size:0.85rem;"></i>{{ trans(key="links", lang=lang) }}
+          </a>
+        </li>
         {% endif %}
 
       </div>
     </div>
 
+    <!-- Footer -->
     <div class="footer">
-      {% block footer %}
-      <div class="globe_css">
-        <script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=OMA2K1dAmRGTW9mPMmgzRLW7kMSfelF45YmgB4U81MA"></script>
-      </div>
-      
-      {% endblock footer %}
+      <p>© {{ now() | date(format="%Y") }} {{ config.title }}</p>
+      <p style="font-size:0.72rem;margin-top:4px;opacity:0.6;">
+        Powered by <a href="https://www.getzola.org/" target="_blank" style="color:var(--primary-light);">Zola</a>
+      </p>
     </div>
   </div>
 
+  <!-- ===== Main Content Area ===== -->
   <div id="main">
+    
+    <!-- Search Overlay -->
     <div class="search-overlay">
-      <button id="close-search" class="close-button">✖</button>
+      <button id="close-search" class="close-button"><i class="fa-solid fa-xmark"></i></button>
       <div class="search-container">
-        <input type="text" id="search" placeholder="Search...">
+        <input type="text" id="search" placeholder="🔍 Search articles...">
         <ul class="search-results">
           <h2 class="search-results__header"></h2>
           <ul class="search-results__items"></ul>
@@ -150,6 +237,7 @@
       </div>
     </div>
 
+    <!-- Content Container -->
     <div class="autopagerize_page_element">
       <div class="content">
         {% block content %}{% endblock content %}
@@ -157,5 +245,4 @@
     </div>
   </div>
 </body>
-
 </html>
