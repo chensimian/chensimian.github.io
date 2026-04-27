@@ -184,7 +184,7 @@ img { max-width: 100%; height: auto; }
     .description { font-size: 14px; }
 
     .logo {
-      margin: 0 auto;
+      margin: 0 auto 36px auto;   /* 头像底部间距，与 h1 分开 */
       padding: 0;
       background-color: #fff;
       border-radius: 50%;
@@ -200,7 +200,6 @@ img { max-width: 100%; height: auto; }
     }
 
     .title {
-      margin-top: 80px;   /* 头像与标题之间的间距（充足空间） */
       padding: 0 12px;   /* 左右内边距防止文字贴边 */
       
       h1 { 
