@@ -244,13 +244,13 @@
 
   <div id="main">
     <div class="search-overlay">
-      <button id="close-search" class="close-button"><i class="fa-solid fa-xmark"></i></button>
       <div class="search-container">
-        <input type="text" id="search" placeholder="🔍 Search articles...">
-        <ul class="search-results">
-          <h2 class="search-results__header"></h2>
+        <button id="close-search" class="close-button" aria-label="Close search"><i class="fa-solid fa-xmark"></i></button>
+        <input type="text" id="search" placeholder="Search articles..." autocomplete="off">
+        <div class="search-results">
+          <h3 class="search-results__header"></h3>
           <ul class="search-results__items"></ul>
-        </ul>
+        </div>
       </div>
     </div>
 
