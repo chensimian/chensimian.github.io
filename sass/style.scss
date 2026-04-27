@@ -198,7 +198,7 @@ img { max-width: 100%; height: auto; }
     }
 
     .title {
-      margin-top: 16px;  /* 头像与标题之间的间距 */
+      margin-top: 24px;  /* 头像与标题之间的间距 */
       h1 { font-family: inherit; font-weight: bold; letter-spacing: 1px; margin: 0; }
       h1 a { text-decoration: none; color: inherit; }
     }
@@ -554,19 +554,42 @@ summary a { color: inherit; }
 html.theme--dark {
 
   /* ===== 背景与全局 ===== */
+  html {
+    background-color: #0d1117;  /* html 根元素铺满深色 */
+  }
+
   body {
     color: #c9d1d9 !important;
     background-color: #0d1117 !important;
+    width: 100% !important;  /* 暗色模式下铺满宽度 */
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* 整个页面背景覆盖 */
   #main {
+    width: 100% !important;
+    max-width: none !important;
     background-color: transparent;
+    padding: 0;
     // 确保 content 区域也是暗色
     .autopagerize_page_element {
       background-color: transparent;
-      .content { background-color: transparent; }
+      .content {
+        background-color: transparent;
+        width: 75% !important; /* 保持内容区在侧边栏右侧 */
+        float: right;
+        margin-right: 3%;
+      }
     }
+  }
+
+  /* content 区域保持原有布局比例 */
+  .content {
+    width: 75% !important;
+    float: right;
+    margin-right: 2%;
   }
 
   html::before {
