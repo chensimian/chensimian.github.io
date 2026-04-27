@@ -5,6 +5,7 @@
 {% block content %}
 
 <script src="{{ get_url(path='js/jquery-1.7.2.min.js') }}"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 <script type="text/javascript">
   $(document).ready(function() {
       // 清空目录以防重复
@@ -15,10 +16,11 @@
           var tag = $(item).prop("tagName").toLowerCase();
           var anchorId = "wow" + i;
           $(item).attr("id", anchorId);
+          // 如果是第一个项目，不加 <br>
           if (i === 0) {
               $("#category").append(`<a class="new${tag}" href="#${anchorId}">${$(item).text()}</a>`);
           } else {
-              $("#category").append(`<a class="new${tag}" href="#${anchorId}">${$(item).text()}</a><br>`);
+              $("#category").append(`<a class="new${tag}" href="#${anchorId}">${$(item).text()}</a><br>`); // 添加 <br> 实现换行
           }
       });
   
@@ -40,67 +42,57 @@
 </script>
 
 <article class="post animated fadeInDown post article-page">
-  
-  <!-- Article Title -->
   <h1>
     {% if page.relative_path is starting_with("Weekly") %}
-    <i class="fa-solid fa-book-open" style="color:var(--primary-light);font-size:0.9rem;margin-right:8px;"></i>
+    <i class="fa-solid fa-book-open" style="color:#7c3aed;font-size:0.9rem;margin-right:8px;"></i>
     {% endif %}
     <a href="{{ page.permalink }}">{{ page.title }}</a>
   </h1>
-  
-  <!-- Meta Info -->
   <div class="info">
     {% if page.date %}
-      <span><i class="far fa-calendar-alt"></i>{{ page.date | date(format="%Y-%m-%d %H:%M") }}</span>&nbsp;&nbsp;
+      <i class="far fa-sun"></i>
+      <i>Push time: {{ page.date | date(format="%Y-%m-%d %H:%M:%S") }}&nbsp;&nbsp;</i>
     {% endif %}
 
     {% if page.taxonomies.tags %}
-      <span><i class="fa-solid fa-tags"></i></span>
+      <i class="fas fa-tags"></i>
       {% for tag in page.taxonomies.tags %}
-        <a class="tag" href="{{ get_taxonomy_url(kind='tags', name=tag, lang=page.lang) | safe }}">{{ tag }}</a>
+        <a class="tag" href="{{ get_taxonomy_url(kind='tags', name=tag, lang=page.lang) | safe }}">{{ tag }}&nbsp;&nbsp;</a>
       {% endfor %}
     {% endif %}
-    <hr style="display:none;">
-  </div>
 
-  <!-- Table of Contents -->
+    <hr>
+  </div>
+  <!-- toc -->
   <details class="details-2" open>
-    <summary tabindex="-1">
-      <a href="javascript:void(0)">
-        <i class="fa-solid fa-list-ul"></i> 文章目录
-      </a>
-    </summary>
+    <summary tabindex="-1"><a href="javascript:void(0)"><i class="fa-solid fa-list"></i> 文章目录</a></summary>
     <div id="category"></div>
   </details>
 
-  <!-- Article Body -->
   <div class="post-content">{{ page.content | safe }}</div>
-
-  <!-- Post Footer: Navigation -->
   <div class="post-footer">
     <div class="meta">
       <div class="info">
-        {# Get current section for navigation #}
+        <!-- 这里可以添加额外的 meta 信息 -->
+        {# 修改后的导航部分 #}
         {% set section_path = page.ancestors | last %}
         {% set section = get_section(path=section_path) %}
     
-        {# Find current page index #}
+        {# 获取当前页面索引 #}
         {% set_global current_index = -1 %}
         {% for p in section.pages %}
           {% if p.permalink == page.permalink %}
             {% set_global current_index = loop.index0 %}
           {% endif %}
         {% endfor %}
-
         <div class="post-navigation">
-          {# Previous Post #}
+          {# 上一篇 #}
           <div class="nav-item prev">
             {% if current_index > 0 %}
               {% set prev_index = current_index - 1 %}
               {% set prev_page = section.pages[prev_index] %}
               <a href="{{ prev_page.permalink }}" class="nav-link">
-                <i class="fa-solid fa-chevron-left"></i>
+                <i class="fas fa-chevron-left"></i>
                 <span class="nav-title">{{ prev_page.title | truncate(length=50) }}</span>
               </a>
             {% else %}
@@ -108,14 +100,14 @@
             {% endif %}
           </div>
       
-          {# Next Post #}
+          {# 下一篇 #}
           <div class="nav-item next">
             {% if current_index < section.pages | length - 1 %}
               {% set next_index = current_index + 1 %}
               {% set next_page = section.pages[next_index] %}
               <a href="{{ next_page.permalink }}" class="nav-link">
                 <span class="nav-title">{{ next_page.title | truncate(length=50) }}</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fas fa-chevron-right"></i>
               </a>
             {% else %}
               <span class="nav-disabled"></span>
@@ -127,7 +119,6 @@
   </div>
 </article>
 
-{# ===== Optional MathJax / Mermaid / TikZ ===== #}
 {% if page.extra.mathjax %}
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script>
@@ -143,8 +134,10 @@
 
 {% if page.extra.tikzjax %}
 <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">
-<style>.tikz > svg { overflow: visible; }</style>
-<script src="{{ get_url(path='js/tikzjax.js', trailing_slash=false) }}"></script>
+<style>
+  .tikz > svg { overflow: visible; }
+</style>
+<script src="{{ get_url(path='js/tikzjax.js', trailing_slash=False) }}"></script>
 {% endif %}
 
 {% if page.extra.mermaid %}
@@ -152,82 +145,66 @@
 <script>mermaid.initialize({ startOnLoad: true });</script>
 {% endif %}
 
-{% block js %}{% endblock js %}
+{% block js %}
+{% endblock js %}
 
-<!-- Post Navigation Styles -->
+<!-- CSS -->
 {% block css %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 <style>
-.post-navigation {
-  margin: 2.5rem 0 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
+  .post-navigation {
+    margin: 3rem 0;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+  }
 
-.nav-item {
-  flex: 1;
-  max-width: 45%;
-}
+  .nav-item {
+    flex: 1;
+    max-width: 45%;
+  }
 
-.nav-item.prev {
-  text-align: left;
-  padding-right: 1rem;
-}
+  .nav-item.prev {
+    text-align: left;
+    padding-right: 1rem;
+  }
 
-.nav-item.next {
-  text-align: right;
-  padding-left: 1rem;
-}
+  .nav-item.next {
+    text-align: right;
+    padding-left: 1rem;
+  }
 
-.nav-link {
-  color: var(--text-secondary);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  transition: all var(--transition-normal);
-  padding: 0.8rem 1.2rem;
-  border-radius: var(--radius-md);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  font-size: 0.88rem;
+  .nav-link {
+    color: #2c3e50;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s ease;
+  }
 
-  &:hover {
-    color: var(--primary-light);
-    border-color: var(--primary);
-    transform: translateX(var(--nav-dir, 0));
+  .nav-link:hover {
+    color: #3498db;
     text-decoration: none;
   }
-}
 
-.nav-item.prev .nav-link:hover { --nav-dir: -4px; }
-.nav-item.next .nav-link:hover { --nav-dir: 4px; }
-
-.nav-disabled {
-  color: var(--text-muted);
-  font-style: italic;
-  opacity: 0.4;
-  visibility: hidden;
-}
-
-.nav-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 200px;
-}
-
-@media (max-width: 768px) {
-  .nav-title { max-width: 120px; }
-  .post-navigation { flex-direction: column; }
-  .nav-item { max-width: 100%; }
-  .nav-item.next { 
-    text-align: left; 
-    padding-left: 0;
-    .nav-link { justify-content: flex-start; } 
+  .nav-disabled {
+    color: #95a5a6;
+    font-style: italic;
   }
-}
+
+  .nav-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .nav-title {
+      max-width: 30vw;
+    }
+  }
 </style>
-{% endblock css %}
+{% endblock css %}  
 
 {% endblock content %}

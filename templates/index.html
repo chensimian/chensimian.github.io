@@ -24,19 +24,17 @@
   <div class="post-wrapper">
     <div class="post-content-wrapper">
       <div class="post-title">
-        <h3>
-          <a href="{{ page.permalink }}">
-            {% if is_weekly %}<i class="fa-solid fa-book" style="color:var(--primary-light);font-size:0.85rem;margin-right:4px;"></i>{% endif %}
-            {{ page.title }}
-          </a>
-        </h3>
+        <h3><a href="{{ page.permalink }}">
+          {% if is_weekly %}<i class="fa-solid fa-book" style="color:#7c3aed;font-size:0.85rem;margin-right:4px;"></i>{% endif %}
+          # {{ page.title }}
+        </a></h3>
       </div>
       <div class="post-content">
         <p>
           {% if page.extra.summary %}
             {{ page.extra.summary | safe | striptags }}
           {% else %}
-            {{ page.content | safe | striptags | truncate(length=180) }}
+            {{ page.content | safe | striptags | truncate(length=150) }}
           {% endif %}
         </p>
       </div>
@@ -44,12 +42,12 @@
         <div class="meta">
           <div class="info">
             {% if page.date %}
-              <span title="发布时间"><i class="far fa-calendar"></i> {{ page.date | date(format="%Y-%m-%d") }}</span>&nbsp;&nbsp;
+              <i class="far fa-sun"></i><i> Push time: {{ page.date | date(format="%Y-%m-%d %H:%M:%S") }}&nbsp;&nbsp;</i>
             {% endif %}
             {% if page.taxonomies.tags %}
-              <span title="标签"><i class="fa-solid fa-tags"></i></span>
+              <i class="fas fa-tags"></i>
               {% for tag in page.taxonomies.tags %}
-                <a class="tag" href="{{ get_taxonomy_url(kind="tags", name=tag, lang=page.lang) | safe }}">{{ tag }}</a>
+                <a class="tag" href="{{ get_taxonomy_url(kind="tags", name=tag, lang=page.lang) | safe }}">{{ tag }}&nbsp;&nbsp;</a>
               {% endfor %}
             {% endif %}
           </div>
@@ -60,20 +58,19 @@
 </section>
 {% endfor %}
 
-{# ===== Pagination ===== #}
 <div class="pagination">
   <ul class="clearfix">
     {% if paginator.next %}
       <li class="next pagbuttons">
         <a class="btn" role="navigation" href="{{ paginator.next }}" aria-label="{{ trans(key="next_page", lang=lang) }}">
-          <i class="fa-solid fa-arrow-right" style="margin-right:6px;"></i>{{ trans(key="next_page", lang=lang) }}
+          {{ trans(key="next_page", lang=lang) }}
         </a>
       </li>
     {% endif %}
     {% if paginator.previous %}
       <li class="pre pagbuttons">
         <a class="btn" role="navigation" href="{{ paginator.previous }}" aria-label="{{ trans(key="last_page", lang=lang) }}">
-          <i class="fa-solid fa-arrow-left" style="margin-right:6px;"></i>{{ trans(key="last_page", lang=lang) }}
+          {{ trans(key="last_page", lang=lang) }}
         </a>
       </li>
     {% endif %}
