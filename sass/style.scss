@@ -570,12 +570,22 @@ html.theme--dark {
 
   body {
     color: #c9d1d9 !important;
-    background-color: transparent !important;  /* 透明，透出 html 的深色 */
+    background-color: #0d1117 !important;  /* 深色背景覆盖 */
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 主内容区暗色背景 */
+  .content {
+    background-color: transparent !important;
   }
 
   html::before {
-    /* 暗色背景图降低亮度 */
-    filter: brightness(0.3) saturate(0.4);
+    /* 暗色模式下彻底隐藏背景图 */
+    opacity: 0;
+    display: none;
   }
 
   a:link, a:visited { color: #58a6ff; }
@@ -646,7 +656,8 @@ html.theme--dark {
 
   /* ===== 文章卡片 ===== */
   .post {
-    background-color: rgba(22, 27, 34, 0.85);
+    background-color: #161b22 !important;   /* 统一深色背景 */
+    border: 1px solid #21262d;              /* 统一边框 */
     box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 
     &:after { display: none; } /* 去掉左侧装饰条 */
@@ -661,11 +672,11 @@ html.theme--dark {
 
       blockquote {
         border-left-color: #30363d;
-        background-color: #161b22;
+        background-color: #0d1117;
         color: #8b949e;
       }
 
-      pre { background-color: #161b22; border: 1px solid #30363d; }
+      pre { background-color: #0d1117; border: 1px solid #30363d; }
       code { background-color: #30363d; color: #e6edf3; }
       strong { color: #e6edf3; }
 
@@ -677,12 +688,41 @@ html.theme--dark {
     }
 
     .post-footer {
-      border-bottom-color: #21262d;
-      .meta { color: #8b949e;
-        a { color: #8b949e; &:hover { color: #58a6ff; }}
+      border-bottom: none;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px solid #21262d;
+
+      .meta {
+        color: #8b949e;
+        font-size: 13px;
+        font-weight: normal;
+
+        i { color: #6e7681; margin-right: 3px; }
+
+        a { color: #8b949e; 
+          &:hover { color: #58a6ff; }
+        }
       }
-      .tags a { color: #8b949e; }
+      .tags a {
+        color: #8b949e;
+        background-color: #21262d;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        &:hover { color: #58a6ff; background-color: #30363d; }
+      }
     }
+  }
+
+  /* 周记卡片 — 暗色模式下与普通文章统一风格，只保留图标区分 */
+  .weekly-card {
+    background-color: #161b22 !important;
+    border: 1px solid #21262d !important;
+
+    &:hover { background-color: #1c2333 !important; }
+
+    .post-title h3 a::before { color: #a371f7; }  /* 保留紫色图标 */
   }
 
   /* ===== 分页 ===== */
@@ -896,7 +936,8 @@ html.theme--dark .weekly-card {
   p { color: #888; font-size: 0.95rem; }
 }
 html.theme--dark .weekly-header {
-  background-color: #1c1228; border: 1px solid #4c1d95;
-  h1 { color: #a371f7; }
+  background-color: #161b22;
+  border: 1px solid #21262d;
+  h1 { color: #a371f7; }   /* 周记标题保持紫色 */
   p { color: #8b949e; }
 }
