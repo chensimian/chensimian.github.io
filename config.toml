@@ -1,6 +1,6 @@
 # Smian's Blog - Zola config
 title = "Smian"
-base_url = "https://smianlovecoding.site/"
+base_url = "https://chensimian.github.io/"
 
 compile_sass = true
 ignored_content = ["README.md"]
