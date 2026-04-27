@@ -186,7 +186,14 @@
       }
 
       var currentTerm = '';
-      var options = { bool: "OR", fields: { title: { boost: 3 }, body: { boost: 1 } } };
+      var options = { 
+      bool: "OR",          // OR 模式：任一关键词匹配即可（模糊搜索）
+      expand: true,        // 展开搜索：包含子词/部分匹配
+      fields: { 
+        title: { boost: 3, bool: "OR", expand: true }, 
+        body: { boost: 1, bool: "OR", expand: true } 
+      }
+    };
 
       // 输入监听
       searchInput.addEventListener('input', debounce(function() {

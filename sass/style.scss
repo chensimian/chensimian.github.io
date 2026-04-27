@@ -553,13 +553,23 @@ html.theme--dark {
 
   /* ===== 背景与全局 ===== */
   body {
-    color: #c9d1d9;
+    color: #c9d1d9 !important;
+    background-color: #0d1117 !important;
+  }
+
+  /* 整个页面背景覆盖 */
+  #main {
     background-color: transparent;
+    // 确保 content 区域也是暗色
+    .autopagerize_page_element {
+      background-color: transparent;
+      .content { background-color: transparent; }
+    }
   }
 
   html::before {
     /* 暗色背景图降低亮度 */
-    filter: brightness(0.4) saturate(0.6);
+    filter: brightness(0.3) saturate(0.4);
   }
 
   a:link, a:visited { color: #58a6ff; }
@@ -569,7 +579,9 @@ html.theme--dark {
 
   /* ===== 侧边栏 ===== */
   #sidebar {
-    background-color: rgba(13, 17, 23, 0.95) !important;
+    background-color: rgba(13, 17, 23, 0.97) !important;
+    background-image: none !important;  /* 彻底去掉侧边栏的背景图 */
+    border-right: 1px solid #21262d;
 
     .logo-title .title h1 { color: #e6edf3 !important; }
     .logo-title .description p,
@@ -601,7 +613,8 @@ html.theme--dark {
 
   /* ===== 导航栏 ===== */
   .page-top {
-    background-color: rgba(22, 27, 34, 0.9) !important;
+    background-color: rgba(22, 27, 34, 0.95) !important;
+    border-right: none !important;
     
     .nav a {
       color: #c9d1d9 !important;
