@@ -1,10 +1,10 @@
 +++
-title = "📓 周记 #01 — 博客搭建 & 新的开始"
+title = "Weekly #01 — Blog Setup & Fresh Start"
 date = 2026-04-27
-description = "第一周周记：从零搭建个人博客"
+description = "First weekly: Building a blog from scratch"
 
 [taxonomies]
-tags = ["周记"]
+tags = ["Weekly"]
 +++
 
 > 本周关键词：**Zola、GitHub Pages、博客搭建、新开始**

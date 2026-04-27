@@ -42,7 +42,7 @@
         <div class="meta">
           <div class="info">
             {% if page.date %}
-              <i class="far fa-sun"></i><i> Push time: {{ page.date | date(format="%Y-%m-%d %H:%M:%S") }}&nbsp;&nbsp;</i>
+              <i class="far fa-sun"></i><i> Published: {{ page.date | date(format="%Y-%m-%d %H:%M") }}&nbsp;&nbsp;</i>
             {% endif %}
             {% if page.taxonomies.tags %}
               <i class="fas fa-tags"></i>

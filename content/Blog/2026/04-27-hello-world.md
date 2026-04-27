@@ -1,10 +1,10 @@
 +++
-title = "Hello, World — 博客开张了"
+title = "Hello, World — My Blog is Live"
 date = 2026-04-27
-description = "这是 Smian 博客的第一篇文章"
+description = "The first post on Smian's blog"
 
 [taxonomies]
-tags = ["随笔"]
+tags = ["Essay"]
 +++
 
 > 万事开头难，但开了头就好办了。
