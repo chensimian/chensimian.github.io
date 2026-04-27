@@ -198,6 +198,7 @@ img { max-width: 100%; height: auto; }
     }
 
     .title {
+      margin-top: 16px;  /* 头像与标题之间的间距 */
       h1 { font-family: inherit; font-weight: bold; letter-spacing: 1px; margin: 0; }
       h1 a { text-decoration: none; color: inherit; }
     }
@@ -386,27 +387,28 @@ a.btn { font-weight: 400; }
 }
 .page_404 { text-align: center; padding-top: 50px; }
 
-/* ========== 搜索弹窗（居中浮层） ========== */
+/* ========== 搜索弹窗（小浮层，类 Command Palette） ========== */
 .search-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
   display: none;
-  background-color: rgba(255,255,255,0.6);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   z-index: 9999;
-  justify-content: center; align-items: flex-start;
-  padding-top: 12vh;
+  justify-content: center;
+  align-items: flex-start;
+  /* 不用背景色遮盖 — 让用户还能看到页面内容 */
 }
 
 .search-container {
   position: relative;
   background-color: #fff;
-  border-radius: 14px;
+  border-radius: 12px;
   box-shadow:
-    0 20px 60px rgba(0,0,0,0.15),
-    0 4px 16px rgba(0,0,0,0.08);
+    0 8px 30px rgba(0,0,0,0.12),
+    0 2px 10px rgba(0,0,0,0.06);
   width: 90%;
-  max-width: 600px;
-  padding: 28px 24px 20px;
+  max-width: 540px;
+  margin-top: 80px;  /* 从顶部往下一点 */
+  padding: 16px 20px 18px;
 }
 
 /* 关闭按钮 */
@@ -737,10 +739,11 @@ html.theme--dark {
   .valine-input { background-color: #0d1117; border-color: #30363d; color: #c9d1d9; }
 
   /* ===== 暗色模式搜索弹窗 ===== */
-  .search-overlay { background-color: rgba(13,17,23,0.85); }
+  .search-overlay { background-color: transparent; }  /* 不遮盖背景 */
   .search-container {
     background-color: #161b22;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.2);
+    border: 1px solid #30363d;
   }
   #search {
     background-color: #0d1117;
