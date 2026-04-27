@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" {% if config.extra.mode %} class="theme--{{config.extra.mode}}" {% else %} class="theme--light" {% endif %}>
+<html lang="en" class="theme--light">
 
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,8 +7,10 @@
   <link rel="apple-touch-icon" href="{{ get_url(path='images/logo.png') }}" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Quicksand Font for headings -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ get_url(path='style.css') }}">
   <title>{% block title %}{{ config.title }}{% endblock title %}</title>
   {% if config.generate_feed %}
@@ -60,18 +62,67 @@
         }
       };
     </script>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    (function() {
+      // 从 localStorage 或配置读取主题
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.className = `theme--${savedTheme}`;
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.className = 'theme--dark';
+      }
+
+      // 切换主题函数
+      window.toggleTheme = function() {
+        const html = document.documentElement;
+        const isDark = html.classList.contains('theme--dark');
+        
+        if (isDark) {
+          html.classList.remove('theme--dark');
+          html.classList.add('theme--light');
+          localStorage.setItem('theme', 'light');
+        } else {
+          html.classList.remove('theme--light');
+          html.classList.add('theme--dark');
+          localStorage.setItem('theme', 'dark');
+        }
+
+        // 刷新图标
+        updateThemeIcon();
+      };
+
+      // 更新主题图标显示
+      function updateThemeIcon() {
+        const icon = document.getElementById('theme-icon');
+        const label = document.getElementById('theme-label');
+        if (icon && label) {
+          const isDark = document.documentElement.classList.contains('theme--dark');
+          icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+          label.textContent = isDark ? 'Light' : 'Dark';
+        }
+      }
+
+      // DOM 加载完成后更新图标
+      document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    })();
+  </script>
+
   <script>
       document.addEventListener('DOMContentLoaded', () => {
         const menuButton = document.getElementById('menu-button');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main');
-    
-        menuButton.addEventListener('click', () => {
-          sidebar.classList.toggle('active'); // 切换侧边栏显示状态
-          mainContent.classList.toggle('active'); // 添加或移除遮罩效果
-        });
-    
-        // 点击主内容区域时，隐藏侧边栏
+
+        if (menuButton) {
+          menuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('active');
+          });
+        }
+
+        // 点击主内容区域时，隐藏侧边栏（移动端）
         mainContent.addEventListener('click', () => {
           if (sidebar.classList.contains('active')) {
             sidebar.classList.remove('active');
@@ -83,6 +134,11 @@
 </head>
 
 <body>
+  <!-- 移动端菜单按钮 -->
+  <button id="menu-button" class="menu-toggle" aria-label="Toggle menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
   <div id="sidebar" class="animated fadeInDown">
     <div class="logo-title">
       <div class="title">
@@ -95,44 +151,85 @@
         </div>
       </div>
     </div>
+
+    <!-- 社交链接 -->
     <ul class="social-links">
-      <li><a href="https://github.com/chensimian" aria-label="Go to Github profile page" title="Github"><i class="fab fa-github"></i></a></li>
+      <li><a href="https://github.com/chensimian" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a></li>
       <li><a href="mailto:chensimian@tencent.com" aria-label="Email" title="Email"><i class="fa-solid fa-envelope"></i></a></li>
-      <li><a href="{{ get_url(path='rss.xml', trailing_slash=false) }}" aria-label="RSS" title="RSS"><i class="fa-solid fa-rss"></i></a></li>
+      <li><a href="{{ get_url(path='rss.xml', trailing_slash=false) }}" aria-label="RSS Feed" title="RSS"><i class="fa-solid fa-rss"></i></a></li>
       {% if config.build_search_index %}
       <li>
-        <span id="search-ico" class="ms-Icon--Search">
+        <span id="search-ico" class="ms-Icon--Search" title="Search">
           <i class="fa-solid fa-magnifying-glass"></i>
         </span>
       </li>
-      <li><a href="https://visitorbadge.io/status?path=https%3A%2F%2Fchensimian.github.io%2F"><img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fchensimian.github.io%2F&label=clicks&labelColor=%232ccce4&countColor=%23ba68c8&style=flat&labelStyle=upper" /></a></li>
+      <li><a href="https://visitorbadge.io/status?path=https%3A%2F%2Fchensimian.github.io%2F"><img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fchensimian.github.io%2F&label=clicks&labelColor=%232ccce4&countColor=%23ba68c8&style=flat&labelStyle=upper" alt="Visitor Count" /></a></li>
       {% endif %}
       {% block more_social_link %}{% endblock more_social_link %}
     </ul>
+
+    <!-- 主题切换按钮 -->
+    <div class="theme-toggle">
+      <button onclick="toggleTheme()" aria-label="Toggle theme" title="Switch theme">
+        <i id="theme-icon" class="fa-solid fa-moon"></i>
+        <span id="theme-label">Dark</span>
+      </button>
+    </div>
+
+    <!-- 导航菜单 -->
     <div class="page-top animated fadeInDown">
       <div class="nav">
         {% set current_url_str = current_url | as_str %}
         {% set language_site_base = get_url(path="@/_index.md", lang=lang) | as_str %}
         {% set language_site_path_without_prefix = current_url | trim_start_matches(pat=language_site_base) | trim_end_matches(pat="/") %}
         {% set language_site_path = '/' ~ language_site_path_without_prefix %}
-        <li><a {% if language_site_path=="/" or language_site_path is starting_with("/page/") %}class="current" {% endif %} href="{{ get_url(path="@/_index.md", lang=lang) }}">{{ trans(key="home", lang=lang) }}</a></li>
+
         <li>
-          <a {% if language_site_path is starting_with("/Blog") or language_site_path is starting_with("/weekly") %}class="current" {% endif %} 
-             href="{{ get_url(path="@/Blog/_index.md", lang=lang) }}">博客</a>
+          <a {% if language_site_path=="/" or language_site_path is starting_with("/page/") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-house-chimney"></i> {{ trans(key="home", lang=lang) }}
+          </a>
+        </li>
+        <li>
+          <a {% if language_site_path is starting_with("/Blog") and not language_site_path is starting_with("/Weekly") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/Blog/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-pen-fancy"></i> 博客
+          </a>
         </li>
         <li>
           <a {% if language_site_path is starting_with("/Weekly") %}class="current" {% endif %} 
-             href="{{ get_url(path="@/Weekly/_index.md", lang=lang) }}">周记</a>
+             href="{{ get_url(path="@/Weekly/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-book-open"></i> 周记
+          </a>
         </li>
         {% if config.extra.show.tags %}
-        <li><a {% if language_site_path is starting_with("/tags") %}class="current" {% endif %} href="{{ get_url(path="@/_index.md", lang=lang) }}tags">{{ trans(key="tags", lang=lang) }}</a></li>
+        <li>
+          <a {% if language_site_path is starting_with("/tags") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/_index.md", lang=lang) }}tags">
+            <i class="fa-solid fa-tags"></i> {{ trans(key="tags", lang=lang) }}
+          </a>
+        </li>
         {% endif %}
-        <li><a {% if language_site_path is starting_with("/archive") %}class="current" {% endif %} href="{{ get_url(path="@/archive/_index.md", lang=lang) }}">{{ trans(key="archive", lang=lang) }}</a></li>
-        <li><a {% if language_site_path is starting_with("/about") %}class="current" {% endif %} href="{{ get_url(path="@/about/_index.md", lang=lang) }}">{{ trans(key="about", lang=lang) }}</a></li>
+        <li>
+          <a {% if language_site_path is starting_with("/archive") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/archive/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-box-archive"></i> {{ trans(key="archive", lang=lang) }}
+          </a>
+        </li>
+        <li>
+          <a {% if language_site_path is starting_with("/about") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/about/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-user"></i> {{ trans(key="about", lang=lang) }}
+          </a>
+        </li>
         {% if config.extra.show.links %}
-        <li><a {% if language_site_path is starting_with("/link") %}class="current" {% endif %} href="{{ get_url(path="@/link/_index.md", lang=lang) }}">{{ trans(key="links", lang=lang) }}</a></li>
+        <li>
+          <a {% if language_site_path is starting_with("/link") %}class="current" {% endif %} 
+             href="{{ get_url(path="@/link/_index.md", lang=lang) }}">
+            <i class="fa-solid fa-link"></i> {{ trans(key="links", lang=lang) }}
+          </a>
+        </li>
         {% endif %}
-
       </div>
     </div>
 
@@ -148,9 +245,9 @@
 
   <div id="main">
     <div class="search-overlay">
-      <button id="close-search" class="close-button">✖</button>
+      <button id="close-search" class="close-button"><i class="fa-solid fa-xmark"></i></button>
       <div class="search-container">
-        <input type="text" id="search" placeholder="Search...">
+        <input type="text" id="search" placeholder="🔍 Search articles...">
         <ul class="search-results">
           <h2 class="search-results__header"></h2>
           <ul class="search-results__items"></ul>
