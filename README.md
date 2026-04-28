@@ -1,10 +1,6 @@
 # Smian's Blog
 
-> Stay hungry, stay foolish.
-
 🌐 Website: [chensimian.github.io](https://chensimian.github.io)
-
-基于 [Zola](https://www.getzola.org/) 静态站点生成器搭建。
 
 ## 本地预览
 
