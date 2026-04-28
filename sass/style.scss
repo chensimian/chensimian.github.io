@@ -343,7 +343,9 @@ img { max-width: 100%; height: auto; }
 .footer {
   clear: both; text-align: center; font-size: 10px;
   margin: 0 auto; position: absolute; bottom: 20px; left: 50%;
-  transform: translateX(-50%); width: 60%; padding: 20px 0;
+  transform: translateX(-50%); width: 200px; padding: 0;
+  height: 200px;
+  overflow: hidden;
 }
 
 .archive { max-width: 100%; margin: 0 auto; padding: 20px; }
@@ -404,7 +406,17 @@ a.btn { font-weight: 400; }
   z-index: 9999;
   justify-content: center;
   align-items: flex-start;
-  /* 不用背景色遮盖 — 让用户还能看到页面内容 */
+  padding: 9vh 16px 24px;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-sizing: border-box;
+}
+.search-overlay.is-open {
+  display: flex;
+}
+body.search-open {
+  overflow: hidden;
 }
 
 .search-container {
@@ -412,36 +424,56 @@ a.btn { font-weight: 400; }
   background-color: #fff;
   border-radius: 12px;
   box-shadow:
-    0 8px 30px rgba(0,0,0,0.12),
-    0 2px 10px rgba(0,0,0,0.06);
-  width: 90%;
-  max-width: 540px;
-  margin-top: 80px;  /* 从顶部往下一点 */
-  padding: 16px 20px 18px;
+    0 18px 48px rgba(30,41,59,0.16),
+    0 2px 12px rgba(30,41,59,0.08);
+  width: min(680px, 100%);
+  padding: 14px;
+  box-sizing: border-box;
+  border: 1px solid rgba(148,163,184,0.28);
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-field > i {
+  position: absolute;
+  left: 16px;
+  z-index: 1;
+  color: #9aa0a6;
+  font-size: 16px;
+  pointer-events: none;
 }
 
 /* 关闭按钮 */
 .close-button {
-  position: absolute; top: 14px; right: 14px;
-  width: 32px; height: 32px;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   background: none; border: none; cursor: pointer;
   color: #999; font-size: 18px; line-height: 1;
-  border-radius: 6px;
-  transition: all 0.2s;
+  border-radius: 8px;
+  transition: color 0.2s, background-color 0.2s;
 
   &:hover { color: #333; background-color: #f3f3f3; }
+  &:focus-visible { outline: 2px solid #4786D6; outline-offset: 2px; }
 }
 
 /* 搜索输入框 */
 #search {
   width: 100%;
-  padding: 13px 16px;
+  height: 54px;
+  padding: 0 52px 0 44px;
   font-size: 17px;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
   outline: none;
-  margin-bottom: 14px;
+  margin: 0;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: inherit;
   box-sizing: border-box;
@@ -456,12 +488,15 @@ a.btn { font-weight: 400; }
 
 /* 搜索结果区域 */
 .search-results {
-  /* 容器，控制整体区域 */
+  display: none;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #edf0f3;
 }
 
 .search-results__header {
   font-size: 13px; font-weight: normal;
-  color: #888; margin: 0 0 10px 0; padding: 0;
+  color: #777; margin: 0 0 8px 2px; padding: 0;
   font-family: inherit;
   line-height: 1.5;
 }
@@ -469,10 +504,10 @@ a.btn { font-weight: 400; }
 /* 结果列表 */
 .search-results__items {
   list-style: none; padding: 0; margin: 0;
-  max-height: 45vh; overflow-y: auto;
-  min-height: 40px;
+  max-height: min(50vh, 420px); overflow-y: auto;
   border: none !important;
   outline: none !important;
+  scrollbar-width: thin;
 }
 
 /* 单条搜索结果 */
@@ -485,7 +520,8 @@ a.btn { font-weight: 400; }
   border: none !important;
   list-style-type: none !important;
 
-  &:hover { background-color: #f5f7fa; }
+  &:hover,
+  &.is-active { background-color: #f5f7fa; }
 }
 
 .search-results__item .search-results__title {
@@ -512,14 +548,60 @@ a.btn { font-weight: 400; }
 #search-ico { cursor: pointer; display: inline-block; padding: 2px 5px; }
 
 @media (max-width: 768px) {
-  .search-overlay { padding-top: 80px; }
-  .search-container { width: 94%; padding: 20px 16px 16px; }
+  .search-overlay { padding-top: 18px; align-items: flex-start; }
+  .search-container { width: 100%; padding: 12px; }
   .search-container #search { font-size: 16px; }
 }
 
 /* 地球地图 */
-.globe_css { display: block; }
-@media (max-width: 768px) { .globe_css { display: none; } }
+.globe_css {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.globe_css iframe,
+.globe_css canvas,
+.globe_css img,
+.globe_css object,
+.globe_css embed {
+  max-width: 200px !important;
+  max-height: 200px !important;
+  width: 200px !important;
+  height: 200px !important;
+  object-fit: contain !important;
+}
+.globe_css > a,
+.globe_css > div,
+.globe_css > table {
+  max-width: 200px !important;
+  max-height: 200px !important;
+  margin: 0 auto !important;
+}
+.globe_css .clstrm_inner {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.globe_css .clstrm_globe {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+}
+.globe_css .clstrm_inner,
+.globe_css .clstrm_globe {
+  transition: none !important;
+  animation-duration: 0s !important;
+}
+@media (max-width: 768px) {
+  .footer,
+  .globe_css { display: none; }
+}
 
 /* 日历 / 分类 */
 .calendar { margin-top:10%; margin-left:auto; margin-right:auto; display:block; width:90%; background-color:#fff; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); padding:20px; transition:box-shadow 0.3s; }
@@ -783,12 +865,17 @@ html.theme--dark {
   .valine-input { background-color: #0d1117; border-color: #30363d; color: #c9d1d9; }
 
   /* ===== 暗色模式搜索弹窗 ===== */
-  .search-overlay { background-color: transparent; }  /* 不遮盖背景 */
+  .search-overlay {
+    background: rgba(13,17,23,0.58);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
   .search-container {
     background-color: #161b22;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 18px 48px rgba(0,0,0,0.45), 0 2px 10px rgba(0,0,0,0.2);
     border: 1px solid #30363d;
   }
+  .search-field > i { color: #6e7681; }
   #search {
     background-color: #0d1117;
     border-color: #30363d;
@@ -800,9 +887,11 @@ html.theme--dark {
     &:hover { color: #c9d1d9; background-color: #21262d; }
   }
   .search-results__header { color: #8b949e; }
+  .search-results { border-top-color: #21262d; }
   .search-results__item {
     border-bottom-color: #21262d;
-    &:hover { background-color: #1c2333; }
+    &:hover,
+    &.is-active { background-color: #1c2333; }
   }
   .search-results__item a { color: #58a6ff; &:hover { color: #79c0ff; } }
   .search-results__teaser { color: #8b949e;

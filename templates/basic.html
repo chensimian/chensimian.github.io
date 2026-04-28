@@ -9,6 +9,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Font Awesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://clustrmaps.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="//clustrmaps.com">
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
   <!-- Quicksand Font for headings -->
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ get_url(path='style.css') }}">
@@ -19,7 +23,6 @@
   {% block extra_head %}{% endblock extra_head %}
 
   {% if config.build_search_index %}
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/elasticlunr@0.9.5/elasticlunr.min.js" defer></script>
   <script type="text/javascript" src="{{ get_url(path='search_index.en.js') | safe }}" defer></script>
   {% endif %}
   <script type="text/javascript" src="{{ get_url(path='js/search.js') | safe }}" defer></script>
@@ -155,7 +158,7 @@
     <!-- 社交链接 -->
     <ul class="social-links">
       <li><a href="https://github.com/chensimian" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a></li>
-      <li><a href="mailto:chensimian@tencent.com" aria-label="Email" title="Email"><i class="fa-solid fa-envelope"></i></a></li>
+      <li><a href="mailto:chensimian2022@email.szu.edu.cn" aria-label="Email" title="Email"><i class="fa-solid fa-envelope"></i></a></li>
       <li><a href="{{ get_url(path='rss.xml', trailing_slash=false) }}" aria-label="RSS Feed" title="RSS"><i class="fa-solid fa-rss"></i></a></li>
       {% if config.build_search_index %}
       <li>
@@ -234,19 +237,21 @@
 
     <div class="footer">
       {% block footer %}
-      <div class="globe_css">
-        <script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=OMA2K1dAmRGTW9mPMmgzRLW7kMSfelF45YmgB4U81MA"></script>
+      <div class="globe_css" aria-label="Visitor map">
+        <script type="text/javascript" id="clstr_globe" src="https://clustrmaps.com/globe.js?d=OMA2K1dAmRGTW9mPMmgzRLW7kMSfelF45YmgB4U81MA"></script>
       </div>
-      
       {% endblock footer %}
     </div>
   </div>
 
   <div id="main">
-    <div class="search-overlay">
-      <div class="search-container">
-        <button id="close-search" class="close-button" aria-label="Close search"><i class="fa-solid fa-xmark"></i></button>
-        <input type="text" id="search" placeholder="Search articles..." autocomplete="off">
+    <div class="search-overlay" aria-hidden="true">
+      <div class="search-container" role="dialog" aria-modal="true" aria-label="Search">
+        <div class="search-field">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="text" id="search" placeholder="Search articles..." autocomplete="off" aria-label="Search articles">
+          <button id="close-search" class="close-button" aria-label="Close search"><i class="fa-solid fa-xmark"></i></button>
+        </div>
         <div class="search-results">
           <h3 class="search-results__header"></h3>
           <ul class="search-results__items"></ul>

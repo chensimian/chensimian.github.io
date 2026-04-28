@@ -1,9 +1,10 @@
-// search script — 最终修复版 v3
+// Search script for mixed Chinese/English content.
 
 (function() {
   'use strict';
 
-  // ====== 工具函数 ======
+  var MAX_ITEMS = 30;
+
   function debounce(func, wait) {
     let timeout;
     return function(...args) {
@@ -18,65 +19,149 @@
     return div.innerHTML;
   }
 
-  // ====== 搜索摘要高亮 ======
-  function makeTeaser(body, terms) {
-    if (!body) return '';
-    const TERM_WEIGHT = 40, NORMAL_WORD = 2, FIRST_WORD = 8, MAX_WORDS = 30;
+  function normalizeText(text) {
+    return (text || '')
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function getTerms(term) {
+    return normalizeText(term)
+      .split(/[\s,，。.!?;；:：、/\\|()[\]{}"'`~@#$%^&*+=<>-]+/)
+      .filter(Boolean);
+  }
+
+  function isSubsequence(needle, haystack) {
+    if (!needle) return false;
+    var pos = 0;
+    for (var i = 0; i < haystack.length && pos < needle.length; i++) {
+      if (haystack[i] === needle[pos]) pos++;
+    }
+    return pos === needle.length;
+  }
+
+  function scoreDoc(doc, term) {
+    var terms = getTerms(term);
+    var fullTerm = normalizeText(term);
+    var title = normalizeText(doc.title);
+    var body = normalizeText(doc.body);
+    var ref = normalizeText(doc.id || doc.ref || '');
+    var haystack = [title, body, ref].join(' ');
+    var score = 0;
+
+    if (!terms.length) return 0;
+    if (title === fullTerm) score += 120;
+    if (title.indexOf(fullTerm) !== -1) score += 80;
+    if (haystack.indexOf(fullTerm) !== -1) score += 45;
+    if (ref.indexOf(fullTerm) !== -1) score += 25;
+    if (isSubsequence(fullTerm.replace(/\s/g, ''), title.replace(/\s/g, ''))) score += 28;
+
+    for (var i = 0; i < terms.length; i++) {
+      var t = terms[i];
+      if (title.indexOf(t) !== -1) score += 55;
+      else if (body.indexOf(t) !== -1) score += 20;
+      else if (ref.indexOf(t) !== -1) score += 14;
+      else if (isSubsequence(t, title)) score += 10;
+      else if (t.length >= 3 && isSubsequence(t, haystack)) score += 5;
+      else return 0;
+    }
+
+    if (doc.body) score += Math.min(10, doc.body.length / 300);
+    if (title === 'index' && !doc.body) score -= 40;
+    return score;
+  }
+
+  function getDocs(searchIndex) {
+    var store = searchIndex && searchIndex.documentStore && searchIndex.documentStore.docs;
+    if (!store) return [];
+    return Object.keys(store).map(function(ref) {
+      var doc = store[ref] || {};
+      doc.ref = ref;
+      return doc;
+    }).filter(isArticleDoc);
+  }
+
+  function isArticleDoc(doc) {
+    var ref = doc && (doc.ref || doc.id);
+    if (!ref) return false;
 
     try {
-      const stemmedTerms = terms.map(w => elasticlunr.stemmer(w.toLowerCase()));
-      let termFound = false, idx = 0, weighted = [];
-      const sentences = body.toLowerCase().split('. ');
-
-      for (let s = 0; s < sentences.length; s++) {
-        const words = sentences[s].split(' ');
-        let value = FIRST_WORD;
-        for (let w = 0; w < words.length; w++) {
-          if (words[w].length > 0) {
-            if (stemmedTerms.some(t => elasticlunr.stemmer(words[w]).startsWith(t))) {
-              value = TERM_WEIGHT;
-              termFound = true;
-            }
-            weighted.push([words[w], value, idx]);
-            value = NORMAL_WORD;
-          }
-          idx += words[w].length + 1;
-        }
-        idx += 1;
-      }
-
-      if (!weighted.length) return body.substring(0, 120);
-
-      const winSz = Math.min(weighted.length, MAX_WORDS);
-      let curSum = weighted.slice(0, winSz).reduce((s, [,w]) => s + w, 0);
-      const wins = [curSum];
-      for (let i = 0; i < weighted.length - winSz; i++) {
-        curSum = curSum - weighted[i][1] + weighted[i + winSz][1];
-        wins.push(curSum);
-      }
-      const maxIdx = termFound ? wins.lastIndexOf(Math.max(...wins)) : 0;
-      let teaser = [], startIdx = weighted[maxIdx][2];
-
-      for (let i = maxIdx; i < maxIdx + winSz && i < weighted.length; i++) {
-        const [word, wt, wIdx] = weighted[i];
-        if (startIdx < wIdx) teaser.push(escapeHtml(body.substring(startIdx, wIdx)));
-        teaser.push(wt === TERM_WEIGHT ? '<b>' + escapeHtml(word) + '</b>' : escapeHtml(word));
-        startIdx = wIdx + word.length;
-      }
-      teaser.push('…');
-      return teaser.join('');
+      var path = new URL(ref, window.location.href).pathname;
+      return /^\/(Blog|Essay|Weekly)\/\d{4}\/[^/]+\/$/.test(path);
     } catch(e) {
-      return body.substring(0, 120);
+      return false;
     }
   }
 
-  // ====== 创建结果条目 ======
+  function localizeUrl(url) {
+    if (!url) return '#';
+    try {
+      var parsed = new URL(url, window.location.href);
+      if (
+        parsed.hostname === 'chensimian.github.io' &&
+        window.location.hostname !== 'chensimian.github.io'
+      ) {
+        return window.location.origin + parsed.pathname + parsed.search + parsed.hash;
+      }
+      return parsed.href;
+    } catch(e) {
+      return url;
+    }
+  }
+
+  function searchDocs(docs, term) {
+    return docs.map(function(doc) {
+      if (!doc || !doc.title) return;
+      return {
+        ref: doc.ref || doc.id,
+        doc: doc,
+        score: scoreDoc(doc, term)
+      };
+    })
+      .filter(function(result) { return result && result.score > 0; })
+      .sort(function(a, b) {
+        if (b.score !== a.score) return b.score - a.score;
+        return (a.doc.title || '').localeCompare(b.doc.title || '');
+      });
+  }
+
+  function makeTeaser(body, terms) {
+    if (!body) return '';
+    var lowerBody = body.toLowerCase();
+    var matchAt = -1;
+
+    for (var i = 0; i < terms.length; i++) {
+      if (!terms[i]) continue;
+      matchAt = lowerBody.indexOf(terms[i].toLowerCase());
+      if (matchAt !== -1) break;
+    }
+
+    var start = matchAt === -1 ? 0 : Math.max(0, matchAt - 45);
+    var end = Math.min(body.length, start + 160);
+    var teaser = body.substring(start, end);
+    var prefix = start > 0 ? '…' : '';
+    var suffix = end < body.length ? '…' : '';
+    var escaped = escapeHtml(teaser);
+
+    terms
+      .filter(function(term) { return term && term.length; })
+      .sort(function(a, b) { return b.length - a.length; })
+      .forEach(function(term) {
+        var safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        escaped = escaped.replace(new RegExp('(' + safeTerm + ')', 'gi'), '<b>$1</b>');
+      });
+
+    return prefix + escaped + suffix;
+  }
+
   function createResultItem(item, terms) {
     const li = document.createElement('li');
     li.className = 'search-results__item';
 
     const a = document.createElement('a');
-    a.href = item.ref || '#';
+    a.href = localizeUrl(item.ref || (item.doc && item.doc.id) || '#');
     a.className = 'search-results__title';
     a.textContent = item.doc.title || '(Untitled)';
     li.appendChild(a);
@@ -89,35 +174,59 @@
     return li;
   }
 
-  // ====== UI 控制 ======
   var overlay = null;
   var searchInput = null;
   var resultsHeader = null;
   var resultsList = null;
   var resultsArea = null;
+  var activeIndex = -1;
+
+  function setActiveResult(index) {
+    if (!resultsList) return;
+    var items = resultsList.querySelectorAll('.search-results__item');
+    if (!items.length) {
+      activeIndex = -1;
+      return;
+    }
+
+    activeIndex = (index + items.length) % items.length;
+    for (var i = 0; i < items.length; i++) {
+      items[i].classList.toggle('is-active', i === activeIndex);
+    }
+    items[activeIndex].scrollIntoView({ block: 'nearest' });
+  }
 
   function openSearch() {
     if (!overlay) return;
-    overlay.style.display = 'flex';
-    setTimeout(function() {
-      if (searchInput) { searchInput.focus(); searchInput.value = ''; }
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('search-open');
+    requestAnimationFrame(function() {
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.value = '';
+      }
       if (resultsList) resultsList.innerHTML = '';
       if (resultsHeader) resultsHeader.textContent = '';
       if (resultsArea) resultsArea.style.display = 'none';
-    }, 50);
+      activeIndex = -1;
+    });
   }
 
   function closeSearch() {
-    if (overlay) overlay.style.display = 'none';
+    if (overlay) {
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+    document.body.classList.remove('search-open');
     if (searchInput) searchInput.value = '';
     if (resultsList) resultsList.innerHTML = '';
     if (resultsHeader) resultsHeader.textContent = '';
     if (resultsArea) resultsArea.style.display = 'none';
+    activeIndex = -1;
   }
 
-  // ====== 初始化 ======
   function init() {
-    // 缓存 DOM 引用
     overlay = document.querySelector('.search-overlay');
     searchInput = document.getElementById('search');
     resultsHeader = document.querySelector('.search-results__header');
@@ -139,7 +248,7 @@
 
     // ESC 关闭
     document.addEventListener('keydown', function(e) {
-      if ((e.key === 'Escape' || e.keyCode === 27) && overlay.style.display !== 'none') {
+      if ((e.key === 'Escape' || e.keyCode === 27) && overlay.classList.contains('is-open')) {
         closeSearch();
       }
     });
@@ -162,12 +271,6 @@
     var MAX_WAIT = 80; // 8 秒
 
     function tryLoadIndex() {
-      if (typeof elasticlunr === 'undefined') {
-        attempts++;
-        if (attempts < MAX_WAIT) { setTimeout(tryLoadIndex, 100); }
-        else { console.error('[Search] elasticlunr 未加载'); }
-        return;
-      }
       if (typeof window.searchIndex === 'undefined') {
         attempts++;
         if (attempts < MAX_WAIT) { setTimeout(tryLoadIndex, 100); }
@@ -175,25 +278,14 @@
         return;
       }
 
-      // 全部就绪，初始化索引
-      var index = null;
-      try {
-        index = elasticlunr.Index.load(window.searchIndex);
-        console.log('[Search] 索引加载成功，文档数:', Object.keys(index.documentStore.docs).length);
-      } catch(err) {
-        console.error('[Search] 索引解析失败:', err);
+      var docs = getDocs(window.searchIndex);
+      if (!docs.length) {
+        console.error('[Search] search_index 文档为空');
         return;
       }
+      console.log('[Search] 索引加载成功，文档数:', docs.length);
 
       var currentTerm = '';
-      var options = { 
-      bool: "OR",          // OR 模式：任一关键词匹配即可（模糊搜索）
-      expand: true,        // 展开搜索：包含子词/部分匹配
-      fields: { 
-        title: { boost: 3, bool: "OR", expand: true }, 
-        body: { boost: 1, bool: "OR", expand: true } 
-      }
-    };
 
       // 输入监听
       searchInput.addEventListener('input', debounce(function() {
@@ -204,39 +296,55 @@
         if (!term) {
           if (resultsArea) resultsArea.style.display = 'none';
           currentTerm = '';
+          activeIndex = -1;
           return;
         }
 
-        if (!index) return;
-
         if (resultsArea) resultsArea.style.display = 'block';
 
-        var rawResults = index.search(term, options);
-        // 不过滤 body 为空的结果 — Zola 的 body 有时为空字符串
-        var results = rawResults.filter(function(r) { 
-          return r.doc && r.doc.title; 
-        });
+        var results = searchDocs(docs, term);
 
         if (results.length === 0) {
           if (resultsHeader) resultsHeader.textContent = 'Nothing like «' + term + '»';
           if (resultsArea) resultsArea.style.display = 'block';
           currentTerm = '';
+          activeIndex = -1;
           return;
         }
 
         currentTerm = term;
-        if (resultsHeader) resultsHeader.textContent = results.length + ' found for «' + term + '»:';
+        if (resultsHeader) resultsHeader.textContent = results.length + ' articles found for «' + term + '»:';
 
-        for (var i = 0; i < results.length && i < 30; i++) {
-          resultsList.appendChild(createResultItem(results[i], term.split(/\s+/)));
+        var terms = getTerms(term);
+        for (var i = 0; i < results.length && i < MAX_ITEMS; i++) {
+          var item = createResultItem(results[i], terms);
+          (function(index, node) {
+            node.addEventListener('mouseenter', function() {
+              setActiveResult(index);
+            });
+          })(i, item);
+          resultsList.appendChild(item);
         }
+        setActiveResult(0);
       }, 150));
 
       // 回车跳转第一个结果
       searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setActiveResult(activeIndex + 1);
+          return;
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setActiveResult(activeIndex - 1);
+          return;
+        }
         if (e.key === 'Enter') {
-          var firstLink = resultsList.querySelector('.search-results__title');
-          if (firstLink && firstLink.href) window.location.href = firstLink.href;
+          var items = resultsList.querySelectorAll('.search-results__item');
+          var activeItem = activeIndex >= 0 ? items[activeIndex] : null;
+          var link = activeItem ? activeItem.querySelector('.search-results__title') : resultsList.querySelector('.search-results__title');
+          if (link && link.href) window.location.href = link.href;
         }
       });
     }
