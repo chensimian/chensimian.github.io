@@ -1,6 +1,6 @@
 # The URL the site will be built for
 title = "Smian"
-base_url = "https://smianlovecoding.site/"
+base_url = "https://chensimian.github.io/"
 
 compile_sass = false
 ignored_content = ["README.md"]
