@@ -1,0 +1,64 @@
+{% extends "basic.html" %}
+
+{% block title %}{{ section.title }} - {{ config.title }}{% endblock title %}
+
+{% block content %}
+  {% set pages = section.pages %}
+  {% if section.subsections %}
+    {% for sub_path in section.subsections %}
+      {% set sub = get_section(path=sub_path) %}
+      {% set_global pages = pages | concat(with=sub.pages) %}
+    {% endfor %}
+  {% endif %}
+
+  {% if pages | length == 0 %}
+    <section class="post animated fadeInDown">
+      <div class="post-wrapper">
+        <div class="post-content-wrapper">
+          <div class="post-title">
+            <h3># {{ section.title }}</h3>
+          </div>
+          <div class="post-content">
+            <p>这里还没有内容，回头来看看吧～</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  {% else %}
+    {% for page in pages | sort(attribute="date") | reverse %}
+      <section class="post animated fadeInDown">
+        <div class="post-wrapper">
+          <div class="post-content-wrapper">
+            <div class="post-title">
+              <h3><a href="{{ page.permalink }}"># {{ page.title }}</a></h3>
+            </div>
+            <div class="post-content">
+              <p>
+                {% if page.extra.summary %}
+                  {{ page.extra.summary | safe | striptags }}
+                {% else %}
+                  {{ page.content | safe | striptags | truncate(length=150) }}
+                {% endif %}
+              </p>
+            </div>
+            <div class="post-footer">
+              <div class="meta">
+                <div class="info">
+                  {% if page.date %}
+                    <i class="far fa-sun"></i><i> Push time: {{ page.date | date(format="%Y-%m-%d %H:%M:%S") }}&nbsp;&nbsp;</i>
+                  {% endif %}
+                  {% if page.taxonomies.tags %}
+                    <i class="fas fa-tags"></i>
+                    {% for tag in page.taxonomies.tags %}
+                      <a class="tag" href="{{ get_taxonomy_url(kind='tags', name=tag, lang=page.lang) | safe }}">{{ tag }}&nbsp;&nbsp;</a>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    {% endfor %}
+  {% endif %}
+{% endblock content %}
