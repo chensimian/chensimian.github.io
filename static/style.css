@@ -1816,12 +1816,31 @@ html.theme--dark .post-content img,html.theme--dark .content article img,html.th
 /* ============================
    Pet corner — sleeping kitty
    ============================ */
+/* pinned at bottom-left of the sidebar */
+#sidebar{position:relative;}
 .pet-corner{
-  position:relative;width:140px;height:120px;margin:1.2rem auto .4rem;
+  position:absolute;left:14px;bottom:60px;
+  width:140px;height:120px;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  pointer-events:none;
+  z-index:5;
 }
 @media (max-width:768px){.pet-corner{display:none}}
+
+.pet-bubble{
+  position:absolute;left:50%;bottom:108px;transform:translateX(-50%) scale(.7);
+  background:#fff;color:#333;font-size:12px;line-height:1.4;
+  padding:6px 10px;border-radius:12px;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+  opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;
+  max-width:160px;
+}
+.pet-bubble::after{
+  content:"";position:absolute;left:50%;bottom:-5px;transform:translateX(-50%) rotate(45deg);
+  width:8px;height:8px;background:#fff;box-shadow:2px 2px 4px rgba(0,0,0,.06);
+}
+.pet-bubble.show{opacity:1;transform:translateX(-50%) scale(1);}
+html.theme--dark .pet-bubble{background:#3a3a3a;color:#eee;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+html.theme--dark .pet-bubble::after{background:#3a3a3a}
 
 .pet-shadow{
   position:absolute;left:50%;bottom:6px;transform:translateX(-50%);
@@ -1836,12 +1855,23 @@ html.theme--dark .post-content img,html.theme--dark .content article img,html.th
 
 .pet-cat{
   position:relative;width:90px;height:96px;
+  background:transparent;border:none;padding:0;cursor:pointer;
   animation:pet-breathe 3.6s ease-in-out infinite;
   transform-origin:center bottom;
+  transition:filter .2s;
 }
+.pet-cat:hover{filter:brightness(1.05) drop-shadow(0 0 4px rgba(244,168,107,.4));}
+.pet-cat:focus{outline:none;}
+.pet-cat.jump{animation:pet-jump .55s ease-out;}
 @keyframes pet-breathe{
   0%,100%{transform:translateY(0) scale(1,1)}
   50%{transform:translateY(-2px) scale(1.02,.98)}
+}
+@keyframes pet-jump{
+  0%{transform:translateY(0) scale(1,1)}
+  30%{transform:translateY(-14px) scale(1.05,.95) rotate(-3deg)}
+  60%{transform:translateY(-8px) scale(.97,1.03) rotate(2deg)}
+  100%{transform:translateY(0) scale(1,1) rotate(0)}
 }
 
 /* ears */
@@ -1914,3 +1944,7 @@ html.theme--dark .cat-ear{border-bottom-color:#d68850}
 html.theme--dark .cat-paw{background:#e9b988}
 html.theme--dark .cat-ear::after{border-bottom-color:#e9b988}
 html.theme--dark .pet-shadow{background:radial-gradient(ellipse,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 70%)}
+
+/* button reset for cat */
+button.pet-cat{font:inherit;color:inherit;-webkit-appearance:none;appearance:none;}
+button.pet-cat *{pointer-events:none;}

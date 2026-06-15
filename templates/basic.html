@@ -93,6 +93,37 @@
         });
       }
 
+      // Pet cat interaction
+      const petCat = document.getElementById('pet-cat');
+      const petBubble = document.getElementById('pet-bubble');
+      if (petCat && petBubble) {
+        const lines = [
+          '喵～你戳到我啦',
+          '今天也要好好写代码哦',
+          '摸鱼一下下不过分吧',
+          '嘿，你好呀 👋',
+          '别看了，认真写文章！',
+          'zzz... 啊？谁碰我？',
+          '想吃小鱼干 🐟',
+          'Stay hungry, stay foolish',
+          '今天的 bug 解决了吗？',
+          '主人，要抱抱～',
+        ];
+        let lastIdx = -1, hideTimer = null;
+        petCat.addEventListener('click', () => {
+          let idx;
+          do { idx = Math.floor(Math.random() * lines.length); } while (idx === lastIdx && lines.length > 1);
+          lastIdx = idx;
+          petBubble.textContent = lines[idx];
+          petBubble.classList.add('show');
+          petCat.classList.remove('jump');
+          void petCat.offsetWidth; // restart animation
+          petCat.classList.add('jump');
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(() => petBubble.classList.remove('show'), 2600);
+        });
+      }
+
       // Dark mode toggle
       const themeBtn = document.getElementById('theme-toggle-btn');
       if (themeBtn) {
@@ -178,8 +209,9 @@
       </div>
     </div>
 
-    <div class="pet-corner" aria-hidden="true">
-      <div class="pet-cat">
+    <div class="pet-corner">
+      <div class="pet-bubble" id="pet-bubble"></div>
+      <button type="button" class="pet-cat" id="pet-cat" aria-label="戳一戳小猫" title="点我喵～">
         <div class="cat-ear left"></div>
         <div class="cat-ear right"></div>
         <div class="cat-head">
@@ -197,7 +229,7 @@
           <div class="cat-paw right"></div>
         </div>
         <div class="cat-tail"></div>
-      </div>
+      </button>
       <div class="pet-shadow"></div>
     </div>
 
