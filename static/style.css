@@ -1742,3 +1742,23 @@ summary a {
     /* 在屏幕宽度小于768px时隐藏 */
   }
 }
+/* === Theme toggle button (added) === */
+.theme-toggle{display:flex;justify-content:center;margin:.5rem 0 1rem 0}
+.theme-toggle button{cursor:pointer;background:transparent;border:1px solid #ddd;border-radius:999px;padding:.3rem .9rem;font-size:.85rem;color:inherit;display:inline-flex;align-items:center;gap:.4rem;transition:all .2s}
+.theme-toggle button:hover{background:rgba(0,0,0,.05)}
+
+/* === Dark theme overrides (added) === */
+html.theme--dark{background-color:#1a1a1a;color:#e6e6e6}
+html.theme--dark body{background-color:#1a1a1a;color:#e6e6e6}
+html.theme--dark a{color:#9cd0ff}
+html.theme--dark .post,html.theme--dark .post-wrapper{background-color:#262626!important;color:#e6e6e6;border-color:#333}
+html.theme--dark .post-title h1,html.theme--dark .post-title h3,html.theme--dark .post-content,html.theme--dark .post-content p{color:#e6e6e6!important}
+html.theme--dark .meta,html.theme--dark .info{color:#aaa}
+html.theme--dark .page-top .nav a{color:#e6e6e6}
+html.theme--dark .page-top .nav a.current{color:#9cd0ff}
+html.theme--dark #sidebar h1 a,html.theme--dark .description p{color:#e6e6e6}
+html.theme--dark .theme-toggle button{border-color:#444;color:#e6e6e6}
+html.theme--dark .theme-toggle button:hover{background:rgba(255,255,255,.06)}
+html.theme--dark .search-container{background:#262626;color:#e6e6e6}
+html.theme--dark #search{background:#1a1a1a;color:#e6e6e6;border-color:#444}
+html.theme--dark .search-overlay{background-color:rgba(0,0,0,.6)}

@@ -20,10 +20,15 @@ slug = "categories"
 
 [extra.social]
 github = "chensimian"
+email = "your-email@example.com"
 
 [extra.show]
 links = true
 tags = true
+blog = true
+weekly = true
+rss = true
+dark_toggle = true
 
 [languages.en]
 generate_feeds = true
@@ -32,6 +37,8 @@ description = "Peace and love"
 [languages.en.translations]
 about = "About"
 home = "Home"
+blog = "Blog"
+weekly = "Weekly"
 tags = "Tags"
 archive = "Archive"
 links = "Links"

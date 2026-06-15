@@ -60,22 +60,57 @@
     };
   </script>
   <script>
+    // Dark mode init (avoid flash)
+    (function () {
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') {
+          document.documentElement.classList.remove('theme--light');
+          document.documentElement.classList.add('theme--dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
       const menuButton = document.getElementById('menu-button');
       const sidebar = document.getElementById('sidebar');
       const mainContent = document.getElementById('main');
-  
-      menuButton.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-        mainContent.classList.toggle('active');
-      });
-  
-      mainContent.addEventListener('click', () => {
-        if (sidebar.classList.contains('active')) {
-          sidebar.classList.remove('active');
-          mainContent.classList.remove('active');
-        }
-      });
+
+      if (menuButton) {
+        menuButton.addEventListener('click', () => {
+          sidebar.classList.toggle('active');
+          mainContent.classList.toggle('active');
+        });
+      }
+
+      if (mainContent) {
+        mainContent.addEventListener('click', () => {
+          if (sidebar && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+            mainContent.classList.remove('active');
+          }
+        });
+      }
+
+      // Dark mode toggle
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      if (themeBtn) {
+        const root = document.documentElement;
+        const updateBtn = () => {
+          const isDark = root.classList.contains('theme--dark');
+          themeBtn.innerHTML = isDark
+            ? '<i class="fa-solid fa-sun"></i> <span>Light</span>'
+            : '<i class="fa-solid fa-moon"></i> <span>Dark</span>';
+        };
+        updateBtn();
+        themeBtn.addEventListener('click', () => {
+          const isDark = root.classList.toggle('theme--dark');
+          root.classList.toggle('theme--light', !isDark);
+          try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+          updateBtn();
+        });
+      }
     });
   </script>
 </head>
@@ -97,6 +132,12 @@
       {% if config.extra.social.github %}
       <li><a href="https://github.com/{{ config.extra.social.github }}" aria-label="Go to Github profile page" title="Github"><i class="fab fa-github"></i></a></li>
       {% endif %}
+      {% if config.extra.social.email %}
+      <li><a href="mailto:{{ config.extra.social.email }}" aria-label="Send email" title="Email"><i class="fa-solid fa-envelope"></i></a></li>
+      {% endif %}
+      {% if config.extra.show.rss and config.generate_feeds %}
+      <li><a href="{{ get_url(path='rss.xml', trailing_slash=false, lang=lang) }}" aria-label="RSS feed" title="RSS"><i class="fa-solid fa-rss"></i></a></li>
+      {% endif %}
       {% if config.build_search_index %}
       <li>
         <span id="search-ico" class="ms-Icon--Search">
@@ -106,6 +147,13 @@
       {% endif %}
       {% block more_social_link %}{% endblock more_social_link %}
     </ul>
+    {% if config.extra.show.dark_toggle %}
+    <div class="theme-toggle">
+      <button id="theme-toggle-btn" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+        <i class="fa-solid fa-moon"></i> <span>Dark</span>
+      </button>
+    </div>
+    {% endif %}
     <div class="page-top animated fadeInDown">
       <div class="nav">
         {% set current_url_str = current_url | as_str %}
@@ -113,6 +161,12 @@
         {% set language_site_path_without_prefix = current_url | trim_start_matches(pat=language_site_base) | trim_end_matches(pat="/") %}
         {% set language_site_path = '/' ~ language_site_path_without_prefix %}
         <li><a {% if language_site_path=="/" or language_site_path is starting_with("/page/") %}class="current" {% endif %} href="{{ get_url(path="@/_index.md", lang=lang) }}">{{ trans(key="home", lang=lang) }}</a></li>
+        {% if config.extra.show.blog %}
+        <li><a {% if language_site_path is starting_with("/blog") or language_site_path is starting_with("/Blog") %}class="current" {% endif %} href="{{ get_url(path="@/Blog/_index.md", lang=lang) }}">{{ trans(key="blog", lang=lang) }}</a></li>
+        {% endif %}
+        {% if config.extra.show.weekly %}
+        <li><a {% if language_site_path is starting_with("/weekly") or language_site_path is starting_with("/Weekly") %}class="current" {% endif %} href="{{ get_url(path="@/Weekly/_index.md", lang=lang) }}">{{ trans(key="weekly", lang=lang) }}</a></li>
+        {% endif %}
         {% if config.extra.show.tags %}
         <li><a {% if language_site_path is starting_with("/tags") %}class="current" {% endif %} href="{{ get_url(path="@/_index.md", lang=lang) }}tags">{{ trans(key="tags", lang=lang) }}</a></li>
         {% endif %}
