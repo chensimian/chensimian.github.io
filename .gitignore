@@ -1,0 +1,14 @@
+# Zola build output
+/public/
+
+# Sass cache
+.sass-cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
