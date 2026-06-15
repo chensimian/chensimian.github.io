@@ -1804,12 +1804,13 @@ html.theme--dark .post-content img,html.theme--dark .content article img,html.th
 /* ============================
    Pet corner — sleeping kitty
    ============================ */
-/* pinned at viewport bottom-left so it never drifts across pages */
+/* pinned at the sidebar bottom-left (where #sidebar is fixed full-height) */
 .pet-corner{
-  position:fixed;left:30px;bottom:30px;
+  position:absolute;left:50%;transform:translateX(-50%);
+  bottom:60px;
   width:140px;height:120px;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  z-index:50;
+  z-index:5;
 }
 @media (max-width:1024px){.pet-corner{display:none}}
 
@@ -1935,3 +1936,17 @@ html.theme--dark .pet-shadow{background:radial-gradient(ellipse,rgba(0,0,0,.45) 
 /* button reset for cat */
 button.pet-cat{font:inherit;color:inherit;-webkit-appearance:none;appearance:none;}
 button.pet-cat *{pointer-events:none;}
+
+/* Theme toggle on its own row, below social-links */
+.theme-toggle-row{
+  display:flex;justify-content:center;
+  margin:.4rem 0 .6rem;
+}
+.theme-toggle-row button{
+  background:transparent;border:1px solid #ddd;color:inherit;cursor:pointer;
+  border-radius:999px;padding:.25rem .8rem;font-size:.8rem;
+  display:inline-flex;align-items:center;gap:.4rem;transition:all .2s;
+}
+.theme-toggle-row button:hover{background:rgba(0,0,0,.05);transform:translateY(-1px)}
+html.theme--dark .theme-toggle-row button{border-color:#444;color:#e6e6e6}
+html.theme--dark .theme-toggle-row button:hover{background:rgba(255,255,255,.08)}

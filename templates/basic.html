@@ -177,14 +177,14 @@
       </li>
       {% endif %}
       {% block more_social_link %}{% endblock more_social_link %}
-      {% if config.extra.show.dark_toggle %}
-      <li class="theme-toggle-li">
-        <button id="theme-toggle-btn" type="button" aria-label="Toggle dark mode" title="Toggle theme">
-          <i class="fa-solid fa-moon"></i>
-        </button>
-      </li>
-      {% endif %}
     </ul>
+    {% if config.extra.show.dark_toggle %}
+    <div class="theme-toggle-row">
+      <button id="theme-toggle-btn" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+        <i class="fa-solid fa-moon"></i> <span>Dark</span>
+      </button>
+    </div>
+    {% endif %}
     <div class="page-top animated fadeInDown">
       <div class="nav">
         {% set current_url_str = current_url | as_str %}
