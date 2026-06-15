@@ -1804,15 +1804,14 @@ html.theme--dark .post-content img,html.theme--dark .content article img,html.th
 /* ============================
    Pet corner — sleeping kitty
    ============================ */
-/* pinned at bottom-left of the sidebar */
-#sidebar{position:relative;}
+/* pinned at viewport bottom-left so it never drifts across pages */
 .pet-corner{
-  position:absolute;left:14px;bottom:60px;
+  position:fixed;left:30px;bottom:30px;
   width:140px;height:120px;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  z-index:5;
+  z-index:50;
 }
-@media (max-width:768px){.pet-corner{display:none}}
+@media (max-width:1024px){.pet-corner{display:none}}
 
 .pet-bubble{
   position:absolute;left:50%;bottom:108px;transform:translateX(-50%) scale(.7);
