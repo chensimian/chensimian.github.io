@@ -19,7 +19,7 @@
   <script type="text/javascript" src="{{ get_url(path='elasticlunr.min.js') | safe }}" defer></script>
   <script type="text/javascript" src="{{ get_url(path='search_index.en.js') | safe }}" defer></script>
   {% endif %}
-  <script type="text/javascript" src="{{ get_url(path='js/search.js') | safe }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path='js/search.js') | safe }}?v={{ now() | date(format='%Y%m%d%H%M') }}" defer></script>
   <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <script>
     window.MathJax = {

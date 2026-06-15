@@ -1730,18 +1730,6 @@ summary a {
     /* 移动端最大宽度调整 */
   }
 }
-.globe_css {
-  display: block;
-  /* 确保在桌面端显示 */
-}
-
-/* 在移动端隐藏内容 */
-@media (max-width: 768px) {
-  .globe_css {
-    display: none;
-    /* 在屏幕宽度小于768px时隐藏 */
-  }
-}
 /* === Theme toggle button (added) === */
 .theme-toggle{display:flex;justify-content:center;margin:.5rem 0 1rem 0}
 .theme-toggle button{cursor:pointer;background:transparent;border:1px solid #ddd;border-radius:999px;padding:.3rem .9rem;font-size:.85rem;color:inherit;display:inline-flex;align-items:center;gap:.4rem;transition:all .2s}
