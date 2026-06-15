@@ -1213,15 +1213,16 @@ html.theme--light .post .post-content ol li {
   /* 增加列表项之间的间距 */
 }
 html.theme--light .post .post-content img {
-  max-width: 90%;
-  /* 图片最大宽度100% */
+  max-width: 480px;
+  /* 限制为合理阅读宽度 */
+  width: 80%;
   height: auto;
   /* 高度自适应 */
   display: block;
   /* 去除图片底部空隙 */
-  margin: 10px auto;
+  margin: 16px auto;
   /* 图片上下间距 */
-  border-radius: 4px;
+  border-radius: 6px;
   /* 为图片添加圆角 */
 }
 html.theme--light .post .post-content table {
@@ -1952,3 +1953,14 @@ button.pet-cat *{pointer-events:none;}
 .theme-toggle-row button:hover{background:rgba(0,0,0,.05);transform:translateY(-1px)}
 html.theme--dark .theme-toggle-row button{border-color:#444;color:#e6e6e6}
 html.theme--dark .theme-toggle-row button:hover{background:rgba(255,255,255,.08)}
+
+/* Force post images to stay readable size in any theme */
+.post-content img,article.post-content img,article .post-content img{
+  max-width:480px !important;width:80% !important;height:auto !important;
+  display:block !important;margin:16px auto !important;border-radius:6px;
+}
+@media (max-width:768px){
+  .post-content img,article.post-content img,article .post-content img{
+    max-width:100% !important;width:100% !important;
+  }
+}
